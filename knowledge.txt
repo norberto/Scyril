@@ -1,0 +1,102 @@
+#1
+
+RelativeLayout relativeLayout = new RelativeLayout(this);
+relativeLayout.setBackgroundColor(Color.GREEN);
+
+Button button = new Button(this);
+button.setId(1);
+button.setText("Log In");
+button.setTextColor(Color.WHITE);
+button.setBackgroundColor(Color.RED);
+
+EditText username = new EditText(this);
+username.setId(2);
+
+RelativeLayout.LayoutParams buttonDetails = new RelativeLayout.LayoutParams(
+    RelativeLayout.LayoutParams.WRAP_CONTENT,
+    RelativeLayout.LayoutParams.WRAP_CONTENT
+);
+
+RelativeLayout.LayoutParams usernameDetails = new RelativeLayout.LayoutParams(
+    RelativeLayout.LayoutParams.WRAP_CONTENT,
+    RelativeLayout.LayoutParams.WRAP_CONTENT
+);
+
+buttonDetails.addRule(RelativeLayout.CENTER_HORIZONTAL);
+buttonDetails.addRule(RelativeLayout.CENTER_VERTICAL);
+
+usernameDetails.addRule(RelativeLayout.CENTER_HORIZONTAL);
+usernameDetails.addRule(RelativeLayout.ABOVE, button.getId());
+usernameDetails.setMargins(0, 0, 0, 50);
+
+Resources resources = getResources();
+int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, resources.getDisplayMetrics());
+
+username.setWidth(px);
+
+relativeLayout.addView(button, buttonDetails);
+relativeLayout.addView(username, usernameDetails);
+setContentView(relativeLayout);
+
+
+
+
+#2
+
+* implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener
+
+this.gestureDetectorCompat = new GestureDetectorCompat(this, this);
+gestureDetectorCompat.setOnDoubleTapListener(this);
+
+@Override
+public boolean onTouchEvent(MotionEvent event) {
+    gestureDetectorCompat.onTouchEvent(event);
+    return super.onTouchEvent(event);
+}
+
+
+
+#3
+private TopSectionListener activityCommander;
+
+public interface TopSectionListener {
+    void createMeme(String top, String bottom);
+}
+
+@Override
+public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    try {
+        activityCommander = (TopSectionListener) activity;
+    } catch (ClassCastException e) {
+        throw new ClassCastException(activity.toString());
+    }
+}
+
+@Override
+public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.top_section_frag, container, false);
+...........
+
+
+@Override
+public void createMeme(String top, String bottom) {
+    BotSectionFragment botFrag = (BotSectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment2);
+    botFrag.setMemeText(top, bottom);
+}
+
+<fragment android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:name="com.mist.sciryl.app.fragments.TopSectionFragment" android:id="@+id/fragment"
+          android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
+          tools:layout="@layout/top_section_frag"/>
+<fragment android:layout_width="320dp"
+          android:layout_height="320dp"
+          android:name="com.mist.sciryl.app.fragments.BotSectionFragment" android:id="@+id/fragment2"
+          android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"
+          tools:layout="@layout/bot_section_frag"/>
+
+
+
+https://www.google.lt/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=android%20auto%20scroll
+http://stackoverflow.com/questions/19826693/how-can-i-make-a-textview-automatically-scroll-as-i-add-more-lines-of-text
